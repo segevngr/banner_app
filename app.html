@@ -1,0 +1,74 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <title> Banner Generator</title>
+    <link rel="stylesheet" href="app.css">
+</head>
+
+<body id = "body" onload="loadBanners()">
+
+<h1>Banner Generator </h1>
+
+<form>
+    <label for="ban_img"> Banner Image URL: </label><br>
+    <input type="text" id="ban_img"><br><br>
+    <label for="red_link"> Redirect Link: </label><br>
+    <input type="text" id="red_link">
+</form>
+<br>
+<button onclick ="invokeBannerCreator()">Submit</button>
+<button onclick ="saveBanners()">Save</button>
+<button onclick ="clearBanners()">Clear</button>
+
+
+<br><br><br><br>
+<div id="banners-list"></div>
+
+<script>
+    function invokeBannerCreator() {
+        const insert_to = "banners-list";
+        const input_red_link = document.getElementById("red_link").value;
+        const input_ban_img = document.getElementById("ban_img").value;
+        createNewBanner(insert_to, input_red_link, input_ban_img);
+    }
+
+    function createNewBanner(element_id, redirect_link, banner_img) {
+        let img = document.createElement('img');
+        img.src = banner_img;
+        img.width = 320;
+        img.height = 320;
+        img.addEventListener("click", function() { window.open(redirect_link); })
+        img.setAttribute("red_link", redirect_link);
+        document.getElementById(element_id).appendChild(img);
+    }
+
+    function saveBanners() {
+        var banners_list = document.getElementById("banners-list");
+        var banners = banners_list.children;
+        for (var i=0; i<banners.length; i++) {
+            var img_url = banners[i].src;
+            var red_link = banners[i].getAttribute("red_link");
+            localStorage.setItem(img_url, red_link);
+        }
+    }
+
+    function loadBanners() {
+        var values = [], keys = Object.keys(localStorage), i = keys.length;
+        while ( i-- )
+            values.push(localStorage.getItem(keys[i]));
+        for (var i=0; i<keys.length; i++) {
+            const insert_to = "banners-list";
+            createNewBanner(insert_to, values[i], keys[i])
+        }
+    }
+
+    function clearBanners() {
+        localStorage.clear();
+    }
+
+</script>
+
+</body>
+
+</html>
